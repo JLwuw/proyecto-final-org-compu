@@ -1,0 +1,1018 @@
+
+					Jump		Start
+
+/ Color Values
+COLOR_UNKNOWN,		HEX			2108 / Dark Gray
+COLOR_FLAG,			HEX			7FE0 / Yellow
+COLOR_MINE,			HEX			0000 / Black
+COLOR_ZERO,			HEX			6318 / Light Gray
+COLOR_ONE,			HEX			01FF / Blue
+COLOR_TWO,			HEX			03E0 / Green
+COLOR_THREE,		HEX			7C00 / Red
+COLOR_FOUR,			HEX			0010 / Dark Blue
+COLOR_FIVE,			HEX			4000 / Dark Red
+COLOR_SIX,			HEX			03FF / Cyan
+COLOR_SEVEN,		HEX			501F / Purple
+COLOR_EIGHT,		HEX			DFFF / White
+
+BoardTiles,			DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC 1
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 2
+DEC -1
+DEC 2
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 2
+DEC -1
+DEC 2
+DEC 1
+DEC 1
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC 1
+DEC 1
+DEC 1
+DEC -1
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC 1
+DEC 1
+DEC 0
+DEC 1
+DEC 2
+DEC 2
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC -1
+DEC 2
+DEC 1
+DEC 1
+DEC 1
+DEC -1
+DEC 1
+DEC 0
+DEC 1
+DEC 1
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC 1
+DEC 2
+DEC -1
+DEC 1
+DEC 1
+DEC 1
+DEC 1
+DEC 0
+DEC 1
+DEC -1
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC 2
+DEC 2
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC 1
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC -1
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC 1
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC 1
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC 1
+DEC 1
+DEC 0
+DEC 1
+DEC -1
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC -1
+DEC 1
+DEC 0
+DEC 1
+DEC 1
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC 1
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC 1
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC 1
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC -1
+DEC 1
+DEC 0
+DEC 0
+DEC 0
+DEC 0
+DEC 1
+DEC -1
+DEC 1
+
+MINE_COUNT, 		DEC			12
+
+
+Start,				Load		BOARD_SIZE
+					Subt		MINE_COUNT
+					Store		SAFE_TILE_COUNT
+
+/ Fill Board with Unknown Tiles
+InitBoard,			Load		DISPLAY_END		
+					Subt		PixelPtr
+					SkipCond	800
+					Jump		PlayerInput
+
+					Load		COLOR_UNKNOWN
+					StoreI		PixelPtr
+
+					Load		PixelPtr
+					Add			ONE
+					Store		PixelPtr
+
+					Jump		InitBoard
+					
+PlayerInput,		JnS 		inputMessage()
+					Input
+					Store		Row
+
+					Input
+					Store		Column
+
+					Input
+					Store		Action
+
+VerifyInput, 		Load		Row				/ Non negative Row
+					Add			ONE
+					SkipCond	800
+					Jump		invalidInput
+
+					Load		Column			/ Non negative Column
+					Add			ONE
+					SkipCond	800
+					Jump		invalidInput
+					
+					Load		DISPLAY_SIZE 	/ Row less than 16 (display size)
+					Subt		Row
+					SkipCond	800
+					Jump		invalidInput
+
+					Load		DISPLAY_SIZE	/ Column less than 16 (display size)
+					Subt		Column
+					SkipCond	800
+					Jump		invalidInput
+
+					Load		Action			/ Action must be 1 (reveal) or 2 (flag)
+					Subt		ONE
+					SkipCond	0C00
+					Jump 		ActionReveal
+
+					Load		Action			/ Action must be 1 (reveal) or 2 (flag)
+					Subt		TWO
+					SkipCond	0C00
+					Jump		ActionFlag
+
+					Jump		invalidInput
+
+/ If the Player chooses action 1 (reveal)
+ActionReveal,		JnS			UpdateBoardIdx()
+					JnS			UpdatePixelPtr()
+					
+					LoadI		PixelPtr		/ Player can only reveal UNKNOWN Tiles
+					Subt		COLOR_UNKNOWN
+					SkipCond	400
+					Jump		PlayerInput
+
+RevealCell,			Load		BOARD_START_PTR	/ Update BoardPtr
+					Add			BoardIdx
+					Store		BoardPtr
+
+					/ Note that all the colors for 0-8 are stored continously in memory
+					/ So by starting at the color for 0 and adding the value which the board pointer is pointing at,
+					/ We get to the correct color
+					
+					Load		COLOR_ZERO_PTR	
+					AddI		BoardPtr
+					Store		ColorPtr
+
+					LoadI		ColorPtr
+					StoreI		PixelPtr
+
+					Subt		COLOR_MINE		/ If reveal mine, game over
+					SkipCond	0C00			
+					Jump		Defeat
+
+					Load		SafeRevealedCount
+					Add			ONE
+					Store		SafeRevealedCount
+
+					LoadI		BoardPtr
+					SkipCond	400				/ If the revealed tile is 0 (no adjacent mines), check Flood
+					Jump		CheckVictory
+					Jump		FloodFill
+
+
+/ When a tile with 0 is revealed, we must also reveal all adjacent tiles
+/ If we reveal another 0 tile in this process, then we repeat until there are no more 0 tiles
+/ This uses a simple iterative approach which looks more or less like this:
+
+/ FloodRepeat = 0
+/ for each tile:
+/     if tile is revealed AND value == 0:
+/         for each neighbor:
+/             if neighbor is unrevealed:
+/                 reveal it
+/                 FloodRepeat = 1
+/ if FloodRepeat == 1 -> repeat
+/ else -> stop
+
+FloodFill,			Clear
+					Store		RepeatFlood
+					
+					Load		BOARD_START_PTR
+					Store		BoardPtr
+
+					Load		DISPLAY_START_PTR
+					Store		PixelPtr
+
+FindRevealedTile,	LoadI		PixelPtr		/ If tile is revealed
+					Subt		COLOR_UNKNOWN
+					SkipCond	0C00
+					Jump		IncrementTile
+
+					LoadI		PixelPtr
+					Subt		COLOR_FLAG
+					SkipCond	0C00
+					Jump		IncrementTile
+
+FindZeroTile,		LoadI		BoardPtr		/ AND tile value = 0
+					SkipCond	0C00			/ Get all the neighbors of this tile
+					Jump		GetAdjacentTiles
+
+IncrementTile,		Load		BoardPtr		/ Else, move on to the next tile
+					Add			ONE
+					Store		BoardPtr
+
+					Load		PixelPtr
+					Add			ONE
+					Store		PixelPtr
+
+					Subt		DISPLAY_END		/ Check if reached the end of the display -> end loop
+					SkipCond	400
+					Jump		FindRevealedTile
+
+VerifyRepeat,		Load		RepeatFlood		/ if RepeatFlood = 1 -> repeat
+					SkipCond	400
+					Jump		FloodFill
+					Jump		CheckVictory
+
+
+/ Get all of the adjacent neighbors of the revealed 0 tile we found in the flood fill
+/ We first get the column of the revealed tile to make sure we don't wrap around and
+/ change tiles which aren't actually adjacent
+
+GetAdjacentTiles,	JnS			GetBoardPtrCol()
+					Load		BoardPtrColReturn	/ If we are at column = 0 , dont check the left
+					SkipCond	400
+					JnS			AdjacentLeft
+					
+					Load		BoardPtrColReturn 	/ If we are at column = 15 , dont check the right
+					Add			ONE
+					Subt		DISPLAY_SIZE
+					SkipCond	400
+					JnS			AdjacentRight
+					
+					Load		BoardPtr			/ Top 
+					Subt		DISPLAY_SIZE
+					Store		BoardPtr
+					JnS			VerifyAdjacent()
+					
+					Load		BoardPtr			/ Bottom
+					Add			DISPLAY_SIZE
+					Add			DISPLAY_SIZE
+					Store		BoardPtr
+					JnS			VerifyAdjacent()					
+					
+					Load		BoardPtr			/ Reset positions of BoardPtr to the original position
+					Subt		DISPLAY_SIZE
+					Store		BoardPtr
+					
+					Load		BoardPtr			/ Reset positions of PixelPtr to the original position
+					Subt		BOARD_START_PTR
+					Store		BoardIdx
+					JnS			UpdatePixelPtr()
+				
+					Jump		IncrementTile
+
+
+AdjacentRight,		HEX			0
+					Load		BoardPtr			/ Right
+					Add			ONE
+					Store		BoardPtr
+					JnS			VerifyAdjacent()
+					
+					Load		BoardPtr			/ Top Right
+					Subt		DISPLAY_SIZE
+					Store		BoardPtr
+					JnS			VerifyAdjacent()
+					
+					Load		BoardPtr			/ Bottom Right
+					Add			DISPLAY_SIZE
+					Add			DISPLAY_SIZE
+					Store		BoardPtr
+					JnS			VerifyAdjacent()
+
+					Load		BoardPtr			/ Reset positions of BoardPtr to the original position
+					Subt		DISPLAY_SIZE
+					Subt		ONE
+					Store		BoardPtr
+
+					Load		BoardPtr			/ Reset positions of PixelPtr to the original position
+					Subt		BOARD_START_PTR
+					Store		BoardIdx
+					JnS			UpdatePixelPtr()
+
+					JumpI		AdjacentRight
+					
+AdjacentLeft,		HEX			0
+					Load		BoardPtr			/ Left
+					Subt		ONE
+					Store		BoardPtr
+					JnS			VerifyAdjacent()
+					
+					Load		BoardPtr			/ Top Left
+					Subt		DISPLAY_SIZE
+					Store		BoardPtr
+					JnS			VerifyAdjacent()
+					
+					Load		BoardPtr			/ Bottom Left
+					Add			DISPLAY_SIZE
+					Add			DISPLAY_SIZE
+					Store		BoardPtr
+					JnS			VerifyAdjacent()
+
+					Load		BoardPtr			/ Reset positions of BoardPtr to the original position
+					Subt		DISPLAY_SIZE
+					Add			ONE
+					Store		BoardPtr
+
+					Load		BoardPtr			/ Reset positions of PixelPtr to the original position
+					Subt		BOARD_START_PTR
+					Store		BoardIdx
+					JnS			UpdatePixelPtr()
+
+					JumpI		AdjacentLeft
+
+
+/ Verify that the given adjacent tile is not out of bounds and isnt revealed
+VerifyAdjacent(),	HEX			0
+					Load		BoardPtr		/ Before the array
+					Subt		BOARD_START_PTR	
+					Add			ONE
+					SkipCond	800
+					JumpI		VerifyAdjacent()
+					
+					Subt		BOARD_SIZE		/ After the array
+					SkipCond	000
+					JumpI		VerifyAdjacent()
+					
+					Load		BoardPtr		/ Update PixelPtr
+					Subt		BOARD_START_PTR
+					Store		BoardIdx
+					JnS			UpdatePixelPtr()
+
+					LoadI		PixelPtr		/ Only reveal UNKNOWN tiles
+					Subt		COLOR_UNKNOWN
+					SkipCond	400
+					JumpI		VerifyAdjacent()
+
+/ Once we finish ALL the verifications, actually reveal it
+RevealAdjacent,		Load		COLOR_ZERO_PTR
+					AddI		BoardPtr
+					Store		ColorPtr
+
+					LoadI		ColorPtr
+					StoreI		PixelPtr
+
+					Load		ONE
+					Store		RepeatFlood
+
+					Load		SafeRevealedCount
+					Add			ONE
+					Store		SafeRevealedCount
+
+					JumpI		VerifyAdjacent()
+					
+
+/ If the Player chooses action 2 (flag)
+ActionFlag,			JnS			UpdateBoardIdx()
+					JnS			UpdatePixelPtr()
+
+					LoadI		PixelPtr		/ If the tile is UNKNOWN, place the flag
+					Subt		COLOR_UNKNOWN
+					SkipCond	0C00
+					Jump		PlaceFlag
+					
+					LoadI		PixelPtr		/ If the tile is already flagged, remove it
+					Subt		COLOR_FLAG
+					SkipCond	0C00
+					Jump		RemoveFlag
+
+					Jump		PlayerInput
+
+PlaceFlag,			Load		COLOR_FLAG
+					StoreI		PixelPtr
+					Jump		PlayerInput
+
+RemoveFlag, 		Load		COLOR_UNKNOWN
+					StoreI		PixelPtr
+					Jump		PlayerInput
+
+
+CheckVictory,		Load		SAFE_TILE_COUNT
+					Subt		SafeRevealedCount
+					SkipCond	400
+					Jump		PlayerInput
+					Jump		Victory
+
+
+Victory, 			LoadImmi 	59  / Y
+					Output
+					LoadImmi 	6F  / o
+					Output
+					LoadImmi 	75  / u
+					Output
+					LoadImmi 	20
+					Output
+					
+					LoadImmi 	77  / w
+					Output
+					LoadImmi 	69  / i
+					Output
+					LoadImmi 	6E  / n
+					Output
+					LoadImmi 	21  / !
+					Output
+					
+					LoadImmi 	0A
+					Output
+
+					LoadImmi 	53   / S
+					Output
+					LoadImmi 	63   / c
+					Output
+					LoadImmi 	6F   / o
+					Output
+					LoadImmi 	72   / r
+					Output
+					LoadImmi 	65   / e
+					Output
+					LoadImmi 	3A   / :
+					Output
+					LoadImmi 	20   / space
+					Output
+					
+					Jump		PrintScore
+
+Defeat, 			LoadImmi 	42  / B
+					Output
+					LoadImmi 	4F  / O
+					Output
+					LoadImmi 	4F
+					Output
+					LoadImmi 	4D  / M
+					Output
+					LoadImmi 	21  / !
+					Output
+					LoadImmi 	20
+					Output
+					
+					LoadImmi 	47  / G
+					Output
+					LoadImmi 	61  / a
+					Output
+					LoadImmi 	6D  / m
+					Output
+					LoadImmi 	65  / e
+					Output
+					LoadImmi 	20
+					Output
+					
+					LoadImmi 	4F  / O
+					Output
+					LoadImmi 	76  / v
+					Output
+					LoadImmi 	65  / e
+					Output
+					LoadImmi 	72  / r
+					Output
+					LoadImmi 	2E  / .
+					Output
+
+					LoadImmi 	0A
+					Output
+
+					LoadImmi 	53   / S
+					Output
+					LoadImmi 	63   / c
+					Output
+					LoadImmi 	6F   / o
+					Output
+					LoadImmi 	72   / r
+					Output
+					LoadImmi 	65   / e
+					Output
+					LoadImmi 	3A   / :
+					Output
+					LoadImmi 	20   / space
+					Output
+
+/ If you die, reveal the location of all mines
+RevealMines,		Load		BOARD_START_PTR
+					Store		BoardPtr
+
+					Load		DISPLAY_START_PTR
+					Store		PixelPtr
+
+FindMine,			LoadI 		BoardPtr
+					SkipCond	000
+					Jump		NextTile
+
+					Load		COLOR_MINE
+					StoreI		PixelPtr				
+
+NextTile,			Load		BoardPtr
+					Add			ONE
+					Store		BoardPtr
+
+					Load		PixelPtr
+					Add			ONE
+					Store		PixelPtr
+
+					Subt		DISPLAY_END		/ Check if reached the end of the display -> end loop
+					SkipCond	400
+					Jump		FindMine
+					Jump		PrintScore
+
+/ Get the equivalent board index of the inputed row and column
+UpdateBoardIdx(),	HEX 		0
+					Clear
+					Store		Counter
+					Store		BoardIdx
+					
+AddRows,			Load		Row
+					Subt		Counter
+					
+					SkipCond	800
+					Jump		AddColumns
+
+					Load		BoardIdx
+					Add			DISPLAY_SIZE
+					Store		BoardIdx
+
+					Load		Counter
+					Add			ONE
+					Store		Counter
+
+					Jump		AddRows
+
+AddColumns,			Load		BoardIdx
+					Add			Column
+					Store		BoardIdx
+
+					JumpI		UpdateBoardIdx()
+
+
+/ Get memory address of the pixel of the corresponding board index
+UpdatePixelPtr(),	HEX			0
+					Load		DISPLAY_START_PTR
+					Add			BoardIdx
+					Store		PixelPtr
+					JumpI		UpdatePixelPtr()
+
+
+/ Get the corresponding column of the current BoardPtr address
+GetBoardPtrCol(), 	HEX			0
+					Load		BoardPtr
+					Subt		BOARD_START_PTR
+					Store		BoardPtrColReturn						
+					
+SubtLoop, 			Subt		DISPLAY_SIZE
+					SkipCond	000			
+					Jump		Continue
+					JumpI		GetBoardPtrCol()
+
+Continue,			Store		BoardPtrColReturn
+					Jump		SubtLoop
+
+
+/ Print score to screen
+PrintScore,			Load		SafeRevealedCount
+					Store		Temp
+
+					Clear
+					Store		Counter
+
+Divide100,			Load		Temp
+					Subt		HUNDRED
+					SkipCond	000
+					Jump		Increment100
+					
+					Load		Counter
+					Add			ASCII0
+					Output
+
+					Clear
+					Store		Counter
+					Jump		Divide10
+
+Increment100,		Store		Temp
+					Load		Counter
+					Add			ONE
+					Store		Counter
+					Jump		Divide100
+
+Divide10, 			Load		Temp
+					Subt		TEN
+					SkipCond	000
+					Jump		Increment10
+					
+					Load		Counter
+					Add			ASCII0
+					Output
+
+					Load		Temp
+					Add			ASCII0
+					Output
+					Halt
+
+Increment10,		Store		Temp
+					Load		Counter
+					Add			ONE
+					Store		Counter
+					Jump		Divide10
+
+/ Player Input
+Row, 				HEX			0
+Column,				HEX			0
+Action, 			HEX			0
+
+/ Display Related things
+DISPLAY_SIZE,		DEC			16
+DISPLAY_START_PTR,	HEX			F00		/ Address of the first element in the display
+DISPLAY_END,		HEX			1000	/ Last address of display (+1, for convenience)
+PixelPtr,			HEX			F00		/ Address of the pixel in the display we want to access
+
+COLOR_ZERO_PTR,		HEX			4		/ Address of color zero. 
+ColorPtr,			HEX			4		/ Address of color we want to access
+
+/ Board Related things
+BOARD_SIZE,			DEC			256		/ Number of tiles in 16x16
+BOARD_START_PTR,	HEX			D		/ Address of the first element in the board
+BoardPtr,			HEX			1		/ Address of the tile we want to access
+BoardIdx, 			HEX			0		/ Index of the board tile we want to access
+
+SAFE_TILE_COUNT,	DEC			0		/ Number of Non-mine tiles on the board
+SafeRevealedCount,	HEX			0		/ Number of Non-mine tiles revealed thus far
+
+BoardPtrColReturn,	HEX			0		/ Stores the result of the GetBoardPtrCol() function
+
+RepeatFlood,		HEX			0		/ Bool to keep track of when to repeat the flood check
+
+/ Constants
+ONE, 				DEC			1
+TWO,				DEC			2
+ASCII0,				HEX			30
+HUNDRED,			DEC			100
+TEN,				DEC			10
+
+/ Counters for loop interators
+Counter, 			HEX			0
+Temp,				HEX			0
+
+/ Print input message
+inputMessage(),		HEX			0
+					LoadImmi 	45  / E
+					Output
+					LoadImmi 	6E  / n
+					Output
+					LoadImmi 	74  / t
+					Output
+					LoadImmi 	65  / e
+					Output
+					LoadImmi 	72  / r
+					Output
+					LoadImmi 	20  / space
+					Output
+					
+					LoadImmi 	52  / R
+					Output
+					LoadImmi 	6F  / o
+					Output
+					LoadImmi 	77  / w
+					Output
+					LoadImmi 	2C  / ,
+					Output
+					LoadImmi 	20
+					Output
+					
+					LoadImmi 	43  / C
+					Output
+					LoadImmi 	6F
+					Output
+					LoadImmi 	6C
+					Output
+					LoadImmi 	2C
+					Output
+					LoadImmi 	20
+					Output
+					
+					LoadImmi 	41  / A
+					Output
+					LoadImmi 	63
+					Output
+					LoadImmi 	74
+					Output
+					LoadImmi 	69
+					Output
+					LoadImmi 	6F
+					Output
+					LoadImmi 	6E
+					Output
+					LoadImmi 	3A  / :
+					Output
+					
+					LoadImmi 	0A  / newline
+					Output
+					JumpI		inputMessage()
+
+
+/ Print invalid input message
+invalidInput,		LoadImmi 	49  / I
+					Output
+					LoadImmi 	6E  / n
+					Output
+					LoadImmi 	76  / v
+					Output
+					LoadImmi 	61  / a
+					Output
+					LoadImmi 	6C  / l
+					Output
+					LoadImmi 	69  / i
+					Output
+					LoadImmi 	64  / d
+					Output
+					LoadImmi 	20
+					Output
+					LoadImmi 	69
+					Output
+					LoadImmi 	6E
+					Output
+					LoadImmi 	70
+					Output
+					LoadImmi 	75
+					Output
+					LoadImmi 	74
+					Output
+					LoadImmi 	2E  / .
+					Output
+					
+					LoadImmi 	0A
+					Output
+					Jump		PlayerInput
+
+/ Function to test the chosen color values
+ColorTest,			Load		DISPLAY_START_PTR
+					Store		PixelPtr
+
+					Load		COLOR_UNKNOWN
+					StoreI		PixelPtr
+					Load		PixelPtr
+					Add			ONE
+					Store		PixelPtr
+					
+					Load		COLOR_FLAG
+					StoreI		PixelPtr
+					Load		PixelPtr
+					Add			ONE
+					Store		PixelPtr
+					
+					Load		COLOR_MINE
+					StoreI		PixelPtr
+					Load		PixelPtr
+					Add			ONE
+					Store		PixelPtr
+
+					Load		COLOR_ZERO
+					StoreI		PixelPtr
+					Load		PixelPtr
+					Add			ONE
+					Store		PixelPtr
+
+					Load		COLOR_ONE
+					StoreI		PixelPtr
+					Load		PixelPtr
+					Add			ONE
+					Store		PixelPtr
+
+					Load		COLOR_TWO
+					StoreI		PixelPtr
+					Load		PixelPtr
+					Add			ONE
+					Store		PixelPtr
+					
+					Load		COLOR_THREE
+					StoreI		PixelPtr
+					Load		PixelPtr
+					Add			ONE
+					Store		PixelPtr
+					
+					Load		COLOR_FOUR
+					StoreI		PixelPtr
+					Load		PixelPtr
+					Add			ONE
+					Store		PixelPtr
+					
+					Load		COLOR_FIVE
+					StoreI		PixelPtr
+					Load		PixelPtr
+					Add			ONE
+					Store		PixelPtr
+					
+					Load		COLOR_SIX
+					StoreI		PixelPtr
+					Load		PixelPtr
+					Add			ONE
+					Store		PixelPtr
+						
+					Load		COLOR_SEVEN
+					StoreI		PixelPtr
+					Load		PixelPtr
+					Add			ONE
+					Store		PixelPtr
+					
+					Load		COLOR_EIGHT
+					StoreI		PixelPtr
+					Halt
